@@ -1,0 +1,29 @@
+{
+  "object_id": "evidence-0001",
+  "kind": "encrypted_archive",
+  "sha256": "899a793cf93879d8c273f65a2d837c122efe27f2d543ac23a12a2dee49862943",
+  "size_bytes": 67,
+  "acquired_at": "2026-06-17T20:30:45.473590Z",
+  "acquired_by": "ariadne-collector",
+  "source_ref": "/mnt/usb/collection.tar.gpg",
+  "custody": [
+    {
+      "actor": "ariadne-collector",
+      "action": "acquired",
+      "at": "2026-06-17T20:30:45.473528Z",
+      "note": "/mnt/usb/collection.tar.gpg"
+    },
+    {
+      "actor": "analyst-jdoe",
+      "action": "reviewed",
+      "at": "2026-06-17T20:30:45.473601Z",
+      "note": "opened case ARI-2026-0042"
+    },
+    {
+      "actor": "legal-hold",
+      "action": "sealed",
+      "at": "2026-06-17T20:30:45.473619Z",
+      "note": "preserved for review"
+    }
+  ]
+}
