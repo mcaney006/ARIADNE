@@ -46,8 +46,10 @@ def format_duration(delta: timedelta) -> str:
     total = delta.total_seconds()
     if total == 0:
         return "0s"
-    # Prefer an exact single unit when the duration divides cleanly.
-    for unit in ("w", "d", "h", "m", "s"):
+    # Prefer an exact single unit when the duration divides cleanly. Seconds are
+    # excluded here because every whole-second duration trivially divides by 1s;
+    # they are handled by the compound path below.
+    for unit in ("w", "d", "h", "m"):
         size = _UNIT_SECONDS[unit]
         if total % size == 0 and total >= size:
             return f"{int(total // size)}{unit}"
