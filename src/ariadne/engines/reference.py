@@ -140,6 +140,20 @@ class ReferenceEngine:
         matches = self._evaluate_prepared(prepared, ir)
         return EvaluationResult(detection_id=ir.id, version=ir.version, matches=tuple(matches))
 
+    def evaluate_prepared(
+        self, prepared: list[Event], detection: Detection | DetectionIR
+    ) -> EvaluationResult:
+        """Evaluate over events that are already canonicalized and deduplicated.
+
+        This is the steady-state path: normalize once, then match many detections
+        without re-paying for ordering and dedup. Callers are responsible for
+        having run :func:`ariadne.events.normalization.prepare` first.
+        """
+
+        ir = _as_ir(detection)
+        matches = self._evaluate_prepared(prepared, ir)
+        return EvaluationResult(detection_id=ir.id, version=ir.version, matches=tuple(matches))
+
     def evaluate_pack(
         self, events: Iterable[Event], detections: Iterable[Detection | DetectionIR]
     ) -> list[EvaluationResult]:

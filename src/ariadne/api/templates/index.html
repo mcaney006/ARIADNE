@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grid md:grid-cols-2 gap-6">
+  <section class="panel p-6">
+    <h2 class="text-lg font-semibold mb-1">Scenarios</h2>
+    <p class="text-sm text-slate-400 mb-4">Replay a recorded incident through the current detection pack.</p>
+    <ul class="space-y-2">
+      {% for s in scenarios %}
+      <li>
+        <a class="block px-4 py-3 rounded-lg bg-[#0e141c] border border-[#1f2a37] hover:border-emerald-400 transition"
+           href="/scenario/{{ s.name }}">
+          <div class="font-medium">{{ s.title }}</div>
+          <div class="text-xs text-slate-500 mono">{{ s.name }}</div>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="panel p-6">
+    <h2 class="text-lg font-semibold mb-1">Detection pack</h2>
+    <p class="text-sm text-slate-400 mb-4">Each rule lowers to one IR and compiles to four SIEM dialects.</p>
+    <ul class="space-y-2">
+      {% for r in rules %}
+      <li>
+        <a class="block px-4 py-3 rounded-lg bg-[#0e141c] border border-[#1f2a37] hover:border-emerald-400 transition"
+           href="/rule/{{ r.id }}">
+          <div class="flex items-center justify-between">
+            <span class="font-medium">{{ r.title }}</span>
+            <span class="text-xs px-2 py-0.5 rounded-full border border-[#2b3a4d] uppercase">{{ r.severity }}</span>
+          </div>
+          <div class="text-xs text-slate-500 mono">{{ r.id }} · v{{ r.version }}</div>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
+{% endblock %}

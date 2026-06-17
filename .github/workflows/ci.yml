@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Create environment
+        run: |
+          uv venv
+          uv pip install -e ".[test]"
+
+      - name: Lint detection pack
+        run: uv run ariadne rules validate rules
+
+      - name: Run test suite
+        run: uv run pytest -q
+
+      - name: Verify scenarios regenerate deterministically
+        run: |
+          uv run python scenarios/departing_engineer/build.py
+          uv run python scenarios/compromised_developer/build.py
+          uv run python scenarios/privileged_admin/build.py
+          git diff --exit-code -- scenarios/*/events.jsonl scenarios/*/scenario.json
+
+      - name: Benchmark (small, reproducible)
+        run: uv run python benchmarks/run.py --events 5000 --repeats 10 --json benchmarks/results/ci.json
+
+      - name: Upload benchmark result
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-result
+          path: benchmarks/results/ci.json

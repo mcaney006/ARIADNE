@@ -134,6 +134,28 @@ def explain(
         typer.echo(f"  {line}")
 
 
+@app.command()
+def console(
+    host: str = typer.Option("127.0.0.1", "--host"),
+    port: int = typer.Option(8000, "--port"),
+    rules: Path = typer.Option(Path("rules"), "--rules", "-r"),
+    scenarios: Path = typer.Option(Path("scenarios"), "--scenarios"),
+) -> None:
+    """Serve the FastAPI investigation console (requires the 'ui' extra)."""
+
+    try:
+        import uvicorn
+
+        from ariadne.api.app import create_app
+    except ImportError as exc:  # pragma: no cover - depends on optional extra
+        raise typer.BadParameter(
+            "the console needs the 'ui' extra: pip install 'ariadne-ir[ui]'"
+        ) from exc
+
+    typer.echo(f"ARIADNE console on http://{host}:{port}")
+    uvicorn.run(create_app(str(rules), str(scenarios)), host=host, port=port)
+
+
 @rules_app.command("list")
 def rules_list(
     rules: Path = typer.Argument(Path("rules"), help="Rule pack directory."),

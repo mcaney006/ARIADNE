@@ -106,7 +106,7 @@ def evaluate_hypotheses(
 
 
 def default_hypotheses() -> list[Hypothesis]:
-    """The standard insider-risk hypothesis set (H1–H5 from the design)."""
+    """The standard insider-risk hypothesis set (H1–H6)."""
 
     return [
         Hypothesis(
