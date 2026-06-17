@@ -1,0 +1,25 @@
+{
+  "id": "departing-engineer",
+  "title": "Departing engineer \u2014 restricted repository collection and staging",
+  "description": "An engineer with a scheduled departure collects restricted source code and stages it to removable media while degrading telemetry.",
+  "detections": [
+    "ARI-IR-0042"
+  ],
+  "facts": {
+    "legitimate_access": true,
+    "contradictory": [
+      "User has legitimate engineering access",
+      "Activity originated from an enrolled corporate device"
+    ],
+    "missing_evidence": [
+      "Manager approval",
+      "Change ticket",
+      "DLP classification result"
+    ]
+  },
+  "expected": {
+    "cases": 1,
+    "detections_triggered": 1,
+    "primary_hypothesis": "H1"
+  }
+}

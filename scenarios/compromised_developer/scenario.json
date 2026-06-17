@@ -1,0 +1,24 @@
+{
+  "id": "compromised-developer",
+  "title": "Compromised developer \u2014 token abuse from unusual infrastructure",
+  "description": "A stolen credential is used from unfamiliar infrastructure to enumerate repositories and pull restricted cloud objects, with no endpoint activity.",
+  "detections": [
+    "ARI-CC-0017"
+  ],
+  "facts": {
+    "auth_from_unusual_infra": true,
+    "no_endpoint_activity": true,
+    "contradictory": [
+      "Valid credentials were used (no brute force observed)"
+    ],
+    "missing_evidence": [
+      "Endpoint telemetry from the employee's enrolled device",
+      "MFA challenge result"
+    ]
+  },
+  "expected": {
+    "cases": 1,
+    "detections_triggered": 1,
+    "primary_hypothesis": "H2"
+  }
+}

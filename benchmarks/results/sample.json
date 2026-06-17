@@ -1,0 +1,19 @@
+{
+  "hardware": {
+    "platform": "Linux-6.18.5-x86_64-with-glibc2.39",
+    "python": "3.11.15",
+    "processor": "x86_64"
+  },
+  "dataset": {
+    "events": 5065,
+    "detections": 3
+  },
+  "results": {
+    "ingestion_events_per_second": 19227,
+    "p50_detection_latency_ms": 44.88,
+    "p99_detection_latency_ms": 187.99,
+    "replay_seconds": 0.261,
+    "peak_memory_mb": 41.6,
+    "alerts_per_pass": 5
+  }
+}

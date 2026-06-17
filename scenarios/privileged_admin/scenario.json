@@ -1,0 +1,24 @@
+{
+  "id": "privileged-admin",
+  "title": "Privileged administrator \u2014 off-hours logging disable and identity churn",
+  "description": "An administrator acts outside the maintenance window from an unseen device, disables logging, creates and deletes a temporary privileged identity, and retrieves restricted evidence.",
+  "detections": [
+    "ARI-TT-0009"
+  ],
+  "facts": {
+    "outside_maintenance_window": true,
+    "unseen_device": true,
+    "contradictory": [
+      "Actor holds legitimate standing administrator privileges"
+    ],
+    "missing_evidence": [
+      "Approved maintenance ticket",
+      "Break-glass justification record"
+    ]
+  },
+  "expected": {
+    "cases": 1,
+    "detections_triggered": 1,
+    "primary_hypothesis": "H5"
+  }
+}

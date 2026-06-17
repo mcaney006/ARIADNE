@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ rule.id }} · ARIADNE{% endblock %}
+{% block content %}
+<a href="/" class="text-sm text-slate-400 hover:text-slate-200">← scenarios</a>
+<h1 class="text-2xl font-semibold mt-4 mb-1">{{ rule.title }}</h1>
+<div class="text-xs text-slate-500 mono mb-6">{{ rule.id }} · v{{ rule.version }} · {{ rule.severity }}</div>
+
+<section class="panel p-6 mb-6">
+  <div class="text-xs uppercase tracking-wide text-slate-500 mb-3">Intermediate representation</div>
+  <pre class="mono text-xs text-emerald-200 whitespace-pre-wrap">{{ tree }}</pre>
+</section>
+
+<div class="grid lg:grid-cols-2 gap-6">
+  {% for name, query in compilations.items() %}
+  <section class="panel p-6">
+    <div class="text-xs uppercase tracking-wide text-slate-500 mb-3">{{ name }}</div>
+    <pre class="mono text-xs text-slate-200 whitespace-pre-wrap">{{ query }}</pre>
+  </section>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}{{ scenario.title }} · ARIADNE{% endblock %}
+{% block content %}
+<a href="/" class="text-sm text-slate-400 hover:text-slate-200">← scenarios</a>
+
+<div class="mt-4 mb-6 flex items-baseline justify-between flex-wrap gap-2">
+  <h1 class="text-2xl font-semibold">{{ scenario.title }}</h1>
+  <div class="text-xs text-slate-400 mono">
+    {{ report.events_processed }} events · {{ report.detections_triggered }} detections ·
+    replay {{ "%.2f"|format(report.latency_seconds) }}s
+  </div>
+</div>
+
+{% if not case %}
+<div class="panel p-6 text-slate-300">No case opened — the pack did not fire on this scenario.</div>
+{% else %}
+
+<!-- Panel 1: Investigation thesis -->
+<section class="panel p-6 mb-6">
+  <div class="flex items-center justify-between flex-wrap gap-4">
+    <div>
+      <div class="text-xs uppercase tracking-wide text-slate-500">Investigation thesis</div>
+      <div class="text-xl font-medium mt-1">{{ case.thesis }}</div>
+      <div class="text-xs text-slate-500 mono mt-1">{{ case.id }} · {{ case.detection_id }}@v{{ case.version }}</div>
+    </div>
+    <div class="flex items-center gap-6">
+      <div class="text-center">
+        <div class="text-4xl font-bold {{ 'text-red-400' if case.risk >= 80 else 'text-amber-400' }}">{{ case.risk }}</div>
+        <div class="text-xs text-slate-500">risk / 100</div>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl font-semibold">{{ case.confidence }}</div>
+        <div class="text-xs text-slate-500">confidence</div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4 grid sm:grid-cols-2 gap-3">
+    <div class="rounded-lg bg-[#0e141c] border border-[#1f2a37] p-3">
+      <div class="text-xs text-slate-500">Primary hypothesis</div>
+      <div class="font-medium">{{ case.primary_hypothesis.label }}</div>
+      <div class="text-xs text-emerald-400 mono">p = {{ "%.2f"|format(case.primary_hypothesis.probability) }}</div>
+    </div>
+    {% if case.leading_alternative %}
+    <div class="rounded-lg bg-[#0e141c] border border-[#1f2a37] p-3">
+      <div class="text-xs text-slate-500">Leading alternative</div>
+      <div class="font-medium">{{ case.leading_alternative.label }}</div>
+      <div class="text-xs text-slate-400 mono">p = {{ "%.2f"|format(case.leading_alternative.probability) }}</div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<div class="grid lg:grid-cols-2 gap-6">
+  <!-- Panel 2: Event thread -->
+  <section class="panel p-6">
+    <div class="text-xs uppercase tracking-wide text-slate-500 mb-3">Event thread</div>
+    <div class="flex flex-wrap items-center gap-2">
+      {% for node in chain %}
+      <div class="rounded-lg bg-[#0e141c] border border-[#1f2a37] px-3 py-2">
+        <div class="text-[10px] uppercase text-slate-500">{{ node.label }}</div>
+        <div class="text-sm mono">{{ node.value }}</div>
+      </div>
+      {% if not loop.last %}<span class="text-emerald-400">→</span>{% endif %}
+      {% endfor %}
+    </div>
+    <div class="text-xs uppercase tracking-wide text-slate-500 mt-5 mb-2">Minimal decisive evidence</div>
+    <div class="mono text-sm text-emerald-300">{{ case.minimal_evidence | join(", ") }}</div>
+  </section>
+
+  <!-- Panel 3: Why this fired -->
+  <section class="panel p-6">
+    <div class="text-xs uppercase tracking-wide text-slate-500 mb-3">Why this fired</div>
+    <ul class="space-y-2 text-sm">
+      {% for line in case.explanation %}
+      <li class="text-slate-300 mono text-xs leading-relaxed">{{ line }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <!-- Panel 4: Alternative explanations -->
+  <section class="panel p-6">
+    <div class="text-xs uppercase tracking-wide text-slate-500 mb-3">Alternative explanations</div>
+    <div class="space-y-3">
+      {% for h in case.hypothesis_scores %}
+      <div class="rounded-lg bg-[#0e141c] border border-[#1f2a37] p-3">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium">{{ h.label }}</span>
+          <span class="text-xs mono text-slate-400">p = {{ "%.2f"|format(h.probability) }}</span>
+        </div>
+        {% if h.supporting %}
+        <div class="text-xs text-emerald-400 mt-1">for: {{ h.supporting | map(attribute='note') | join("; ") }}</div>
+        {% endif %}
+        {% if h.contradicting %}
+        <div class="text-xs text-red-400 mt-1">against: {{ h.contradicting | map(attribute='note') | join("; ") }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Panel 5: Detection durability -->
+  <section class="panel p-6">
+    <div class="text-xs uppercase tracking-wide text-slate-500 mb-3">Detection durability</div>
+    {% if case.durability %}
+    <div class="text-xs uppercase text-emerald-400 mb-1">Passes</div>
+    <ul class="space-y-1 mb-3">
+      {% for p in case.durability.passes %}
+      <li class="text-sm text-slate-300">✓ {{ p }}</li>
+      {% endfor %}
+    </ul>
+    {% if case.durability.fails %}
+    <div class="text-xs uppercase text-red-400 mb-1">Fails</div>
+    <ul class="space-y-1">
+      {% for f in case.durability.fails %}
+      <li class="text-sm text-red-300">✗ {{ f }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% else %}
+    <div class="text-sm text-slate-500">durability not computed</div>
+    {% endif %}
+  </section>
+</div>
+
+<!-- Evidence registers -->
+<div class="grid md:grid-cols-3 gap-6 mt-6">
+  <section class="panel p-5">
+    <div class="text-xs uppercase tracking-wide text-emerald-400 mb-2">Supporting</div>
+    <ul class="space-y-1 text-sm text-slate-300">
+      {% for item in case.supporting %}<li>{{ item.render() }}</li>{% endfor %}
+    </ul>
+  </section>
+  <section class="panel p-5">
+    <div class="text-xs uppercase tracking-wide text-amber-400 mb-2">Contradictory</div>
+    <ul class="space-y-1 text-sm text-slate-300">
+      {% for item in case.contradictory %}<li>{{ item.render() }}</li>{% endfor %}
+    </ul>
+  </section>
+  <section class="panel p-5">
+    <div class="text-xs uppercase tracking-wide text-slate-400 mb-2">Missing</div>
+    <ul class="space-y-1 text-sm text-slate-300">
+      {% for item in case.missing %}<li>{{ item.render() }}</li>{% endfor %}
+    </ul>
+  </section>
+</div>
+
+{% endif %}
+{% endblock %}

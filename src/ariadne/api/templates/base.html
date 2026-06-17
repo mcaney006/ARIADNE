@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}ARIADNE Console{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        ink: '#0b0f14', panel: '#121821', edge: '#1f2a37',
+        accent: '#5eead4', warn: '#f59e0b', danger: '#ef4444', good: '#34d399'
+      } } }
+    }
+  </script>
+  <style>
+    body { background: #0b0f14; color: #e5edf5; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .panel { background: #121821; border: 1px solid #1f2a37; border-radius: 0.75rem; }
+  </style>
+</head>
+<body class="h-full">
+  <header class="border-b border-[#1f2a37]">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center gap-3">
+      <a href="/" class="text-xl font-semibold tracking-tight">ARIADNE</a>
+      <span class="text-xs text-slate-400 mono">deterministic insider-risk detection &amp; forensic replay</span>
+    </div>
+  </header>
+  <main class="max-w-6xl mx-auto px-6 py-8">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
